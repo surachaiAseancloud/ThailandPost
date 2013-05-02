@@ -1,0 +1,2018 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>jQuery Mobile Web App</title>
+		<link href="jquery-mobile/jquery.mobile.theme-1.0.min.css"
+			rel="stylesheet" type="text/css" />
+		<link href="jquery-mobile/jquery.mobile.structure-1.0.min.css"
+			rel="stylesheet" type="text/css" />
+		<link href="jquery-mobile/flexslider.css" rel="stylesheet"
+			type="text/css" />
+		<!--<link href="styles/jqm_red_theme.css" rel="stylesheet" type="text/css">-->
+		<link href="styles/jquery.mobile.glossify.theme.css" rel="stylesheet"
+			type="text/css">
+		<link href="styles/custom.css" rel="stylesheet" type="text/css">
+		<!--<link href="styles/f.css" rel="stylesheet" type="text/css">-->
+		<script src="jquery-mobile/jquery-1.6.4.min.js" type="text/javascript"></script>
+		<script src="jquery-mobile/jquery.mobile-1.0.min.js"
+			type="text/javascript"></script>
+		<script src="jquery-mobile/jquery.flexslider.js"
+			type="text/javascript"></script>
+		<script src="jquery-mobile/jquery.flexslider-min.js"
+			type="text/javascript"></script>
+		<script src="main.js"></script>
+		<script type="text/javascript" src="ajax.js"></script>
+		<script>
+
+var urllistall = "http://192.168.1.99:88/thaipost/services/json-data4.php";
+
+// Can also be used with $(document).ready()
+$(document).ready(function() {
+	$('.flexslider').flexslider({
+		  slideDirection: "horizontal",
+		  animation: "slide",
+		  controlNav: false, 
+		  directionNav: true,
+		  start: function(slider){
+			$('.flexslider').css("max-height" , "auto");
+			//$('.flexslider').css("max-width" , "100%");
+		}
+	});				
+});
+
+function refreshPage() {
+  $.mobile.changePage(
+    window.location.href,
+    {
+      allowSamePageTransition : true,
+      transition              : 'none',
+      showLoadMsg             : false,
+      reloadPage              : true
+    }
+  );
+}
+
+$(document).ready(function(){
+    //attach a jQuery live event to the button
+    //$('#getdata-button').live('click', function(){
+        $.getJSON('http://192.168.1.99:88/thaipost/services/json-data.php', function(data) {
+            //alert(data); //uncomment this for debug
+            //alert (data.item1+" "+data.item2+" "+data.item3); //further debug
+			//$("#showdata").append(data.list);
+			
+            $('#showdata').html("<p>item1="+data.item1+"</p>"+"<p>item2="+data.item2+"</p>"+"<p>item3="+data.item3+"</p>");
+			//$('#showdata').html("<p>item2="+data.item2+"</p>");
+			//$('#showdata').html("<p>item3="+data.item3+"</p>");
+        });
+    //});
+});
+/*
+$(document).ready(function() {
+	$("#login").click(function() {	
+		//var action = $("#form1").attr('action');		
+		//alert($("#username").val());
+		//alert($("#password").val());
+		var form_data = {		
+			username: $("#username").val(),
+			password: $("#password").val(),
+			is_ajax: 1
+	};
+	//var localStorageKey = "demoStorageKey";
+	$.ajax({	
+				type: "POST",				
+				url: "http://localhost:88/thaipost/services/doLogin.php",
+				data: form_data,				
+				success: function(response)				
+				{				
+					if(response == 'success')				
+						$("#form1").slideUp('slow', function() {					
+						$("#message").html("<p class='success'>You have logged in successfully!</p>");
+						//localStorage.setItem(localStorageKey, $('#username').val());
+						
+						
+						$.mobile.changePage("#page");
+						//showStoreValue();
+						//e.preventDefault();
+						
+					});				
+					else				
+						$("#message").html("<p class='error'>Invalid username and/or password.</p>");  				
+				}	
+			});	
+		return false;	
+	});
+});
+*/
+
+$(document).ready(function() {
+  $("#login").click(function() {
+		if($("#username").val()=='demo'){
+			$.mobile.changePage("#page");
+			$('#form1').clearForm();
+		}
+	});
+});
+
+/*
+var token = "";
+
+$(document).ready(function() {
+  $("#login").click(function() {
+	//alert($("#username").val());
+	//alert($("#password").val());  
+	var c = 'jsonPackage={"serviceName":"signIn","params":{"username":"'+$("#username").val()+'","password":"'+$("#password").val()+'"},"tokenKey":""}';
+	//alert(c);
+    $.ajax({
+      type: "POST",
+      url: "http://localhost:88/thaipost/services/doLogin_json.php",
+	  //url: "http://192.168.1.126:80/emoservice/service",
+      data: $('#form1').serialize(),	  
+	  //data: c,
+      dataType: "json",
+      success: function(data) {
+		  //alert('success');
+		  //alert(data);
+      //  $('section').fadeOut('fast', function() {
+      //    $('section').html('Welcome ' + data.name).fadeIn('fast', function() {
+      //      $('body').css({'backgroundColor': '#' + data.background});
+      //    });
+      //  });
+		  //alert(data.name);  
+		  //alert(data.status); 
+		  //alert(data);
+		  
+		  //output		  //{"serviceName":"signIn","tokenKey":"85079c098d91866fcd771b9c71e3236c","data":{"fullName":"test"}}
+		  //  Service local Test
+		  if(data.status == 'success'){
+			  token = data.status;
+		  //	Service Java Test 
+	  	  //if(data.tokenKey != ''){			  
+		  	//$("#message").html("<p class='success'>You have logged in successfully!</p>");
+		  	
+			$.mobile.changePage("#page");
+			//$("#token").empty().append(data.status);
+			$('#form1').clearForm();			
+			//makeList(urllistall);
+			//refreshPage();
+			//$("#welcome").html('Welcome ' + data.name);
+		  }else{
+			$("#message").html("<p class='error'>Invalid username and/or password.</p>"); 
+		  }
+      },
+      statusCode: {
+        403: function(e) {
+          $("#message").html(e.responseText);
+        }
+      }
+    });
+    return false;
+  });
+});
+*/
+
+function checkToken(resp) {
+	//alert(resp);	
+	if(resp == 'success') {
+		//window.location.href = "functions/login.php?token=" + data.result.token;
+		 } else { 
+		 //$("#result").html("Invalid username and/or password."); 
+		 //window.location.href = "index.html#signin";
+		 $.mobile.changePage("#signin");
+	}
+}
+
+$("#page").live('pagebeforeshow', function(event) {
+	//$('#mylist').empty();
+	//makeMyListJSON();	
+	//alert("from #page "+token);
+	//checkToken(token);
+});
+
+$("#page2").live('pagebeforeshow', function(event) {
+	//$('#mylist').empty();
+	//makeMyListJSON();	
+	//alert("from #page2 "+token);
+	//checkToken(token);
+});
+
+
+$("#mylists").live('pagebeforeshow', function(event) {
+	//alert("from #mylists "+token);
+	//checkToken(token);
+	//$('#mylist').empty();
+	//makeMyListJSON();
+});
+
+function makeMyListJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-mylist.php', function(data) {			
+			//alert(data.length);			
+			//for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+		$("#mylist").append("<li><a href='#page3'><h3>รายการทั้งหมด</h3><p>All Lists</p><span class='ui-li-count'>"+data.countall+"</span></a></li>");
+		
+		$("#mylist").append("<li><a href='#inprocess1'><h3>รอยืนยันทำรายการ</h3><p>Wait for Confirm</p><span class='ui-li-count'>"+data.countwc+"</span></a></li>");
+		
+		$("#mylist").append("<li><a href='#inprocess2'><h3>รอชำระเงิน</h3><p>Wait for Payment</p><span class='ui-li-count'>"+data.countwp+"</span></a></li>"
+);
+		
+		$("#mylist").append("<li><a href='#inprocess3'><h3>รอจ่ายเงินแก่ผู้รับ</h3><p>Wait for Receieve</p><span class='ui-li-count'>"+data.countwr+"</span></a></li>"
+);
+		
+		$("#mylist").append("<li><a href='#paid'><h3>รายการเสร็จสิ้น</h3><p>Paid</p><span class='ui-li-count'>"+data.countpaid+"</span></a></li>");
+				
+			//}
+		$("#mylist").listview("refresh");		
+	});
+}
+
+
+$("#page3").live('pagebeforeshow', function(event) {
+    //$('#dataList').empty();
+	$('#listall').empty();
+	makeListAllJSON();
+	//makeList(urllistall);
+
+});
+/*
+function makeList(urllistall) {
+	alert(urllistall);
+    $.post(urllistall,
+        function(resultfromphp) {
+          $('#dataList').append(resultfromphp);
+          $('#dataList').trigger('create');    
+          $('#dataList').listview('refresh');
+    });
+}
+*/
+
+function makeListAllJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-listall.php', function(data) {			
+			//alert(data.length);			
+			for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+				$("#listall").append("<li><a href='#' data-transition='slideup'><h3>Ref Code:</h3><p> "+ data[i].refcode +"</p><p><b>วันที่ทำรายการ</b> " + data[i].refcode + "</p><p><b>ผู้รับเงิน</b> "+ data[i].firstname+" "+data[i].lastname+"</p><p><b>จำนวนเงินเงิน </b>"+ data[i].total +"บาท</p><p><b>สถานะ </b>"+ data[i].status+"</p></a></li>");				
+			}
+			$("#listall").listview("refresh");		
+	});
+}
+
+//inprocess1
+
+$("#inprocess1").live('pagebeforeshow', function(event) {
+	$('#listwc').empty();
+	makeListW4CJSON();
+});
+
+function makeListW4CJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-listwc.php', function(data) {			
+			//alert(data.length);			
+			for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+				$("#listwc").append("<li><a href='#' data-transition='slideup'><h3>Ref Code:</h3><p>"+ data[i].refcode +"</p><p><b>วันที่ทำรายการ</b> " + data[i].createdate + "</p><p><b>ผู้รับเงิน</b> "+ data[i].firstname+" "+data[i].lastname+"</p><p><b>จำนวนเงินเงิน</b> "+ data[i].total +"บาท</p><p><b>สถานะ</b> "+ data[i].status+"</p></a><a href='#' data-transition='slideup'>View detail</a></li>");				
+			}
+			$("#listwc").listview("refresh");		
+	});
+}
+
+//inprocess2
+
+$("#inprocess2").live('pagebeforeshow', function(event) {
+	$('#listwp').empty();
+	makeListW4PJSON();
+});
+
+
+function makeListW4PJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-listwp.php', function(data) {			
+			//alert(data.length);			
+			for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+				$("#listwp").append("<li><a href='#' data-transition='slideup'><h3>Ref Code:</h3><p>"+ data[i].refcode +"</p><p><b>วันที่ทำรายการ</b> " + data[i].createdate + "</p><p><b>ผู้รับเงิน</b> "+ data[i].firstname+" "+data[i].lastname+"</p><p><b>จำนวนเงินเงิน</b> "+ data[i].total +"บาท</p><p><b>สถานะ</b> "+ data[i].status+"</p></a><a href='#' data-transition='slideup'>View detail</a></li>");				
+			}
+			$("#listwp").listview("refresh");		
+	});
+}
+
+//inprocess3
+
+$("#inprocess3").live('pagebeforeshow', function(event) {
+	$('#listwr').empty();
+	makeListW4RJSON();
+});
+
+function makeListW4RJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-listwr.php', function(data) {			
+			//alert(data.length);			
+			for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+				$("#listwr").append("<li><a href='#' data-transition='slideup'><h3>Ref Code:</h3><p>"+ data[i].refcode +"</p><p><b>วันที่ทำรายการ</b> " + data[i].createdate + "</p><p><b>ผู้รับเงิน</b> "+ data[i].firstname+" "+data[i].lastname+"</p><p><b>จำนวนเงินเงิน</b> "+ data[i].total +"บาท</p><p><b>สถานะ</b >"+ data[i].status+"</p></a><a href='#' data-transition='slideup'>View detail</a></li>");				
+			}
+			$("#listwr").listview("refresh");		
+	});
+}
+
+//Paid
+
+$("#paid").live('pagebeforeshow', function(event) {
+	$('#listpaid').empty();
+	makeListPaidJSON();
+});
+
+
+function makeListPaidJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-listpaid.php', function(data) {			
+			//alert(data.length);			
+			for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+				$("#listpaid").append("<li><a href='#' data-transition='slideup'><h3>Ref Code:</h3><p>"+ data[i].refcode +"</p><p><b>วันที่ทำรายการ</b> " + data[i].createdate + "</p><p><b>ผู้รับเงิน</b> "+ data[i].firstname+" "+data[i].lastname+"</p><p><b>จำนวนเงินเงิน</b> "+ data[i].total +"บาท</p><p><b>สถานะ</b> "+ data[i].status+"</p></a><a href='#' data-transition='slideup'>View detail</a></li>");				
+			}
+			$("#listpaid").listview("refresh");		
+	});
+}
+
+$("#mycontacts").live('pagebeforeshow', function(event) {
+	$('#contact').empty();
+	makeMyContactJSON();
+});
+
+
+function makeMyContactJSON() {
+	$.getJSON('http://localhost:88/thaipost/services/json-data-listpaid.php', function(data) {			
+			//alert(data.length);			
+			for (var i=0;i<data.length;i++) {			
+				//alert("JSON Data: " + data[i].name);
+				$("#contact").append("<li><a href='#' data-transition='slideup'><h3>Ref Code:</h3><p>"+ data[i].refcode +"</p><p><b>วันที่ทำรายการ</b> " + data[i].createdate + "</p><p><b>ผู้รับเงิน</b> "+ data[i].firstname+" "+data[i].lastname+"</p><p><b>จำนวนเงินเงิน</b> "+ data[i].total +"บาท</p><p><b>สถานะ</b> "+ data[i].status+"</p></a><a href='#' data-transition='slideup'>View detail</a></li>");				
+			}
+			$("#contact").listview("refresh");		
+	});
+}
+
+</script>
+
+		<!--
+<style>
+.ui-grid-b img {
+    width  : 100%;
+    height : auto;
+}
+</style>
+-->
+	</head>
+	<body>
+
+
+		<div data-role="page" id="signin" data-theme="c">
+			<div data-role="header" data-position="fixed" data-theme="f"
+				id="fixed-header">
+
+				<!--<img border="0" src="images/ThailandPost_Logo.png"  style="float:left;display:inline;margin-left:10px;margin-top: 2px;"/>-->
+				<!--<div data-role="header" data-theme="e">-->
+				<h1>
+					Sign In
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					class="ui-btn-right"></a>
+			</div>
+
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<div class="content-primary">
+					<!--<form method="post" class="msform" data-ajax="false">-->
+					<form id="form1" name="form1" method="post">
+						<!--<input type="hidden" name="nextStep" value="page">-->
+						<div data-role="fieldcontain">
+							<label for="name">
+								Username:
+							</label>
+							<input type="text" name="username" id="username" value=""
+								data-mini="true" />
+						</div>
+						<div data-role="fieldcontain">
+							<label for="name">
+								Password:
+							</label>
+							<input type="password" name="password" id="password" value=""
+								data-mini="true" />
+						</div>
+						<div class="ui-body ui-body-c">
+							<fieldset class="ui-grid-a">
+								<div class="ui-block-a">
+									<button type="submit" id="login" name="login" data-theme="f"
+										data-mini="true">
+										Sign in
+									</button>
+								</div>
+								<div class="ui-block-b">
+									<button type="button" data-theme="d" data-mini="true"
+										onClick="alert('Register')">
+										Register
+									</button>
+								</div>
+							</fieldset>
+						</div>
+					</form>
+					<div id="message"></div>
+				</div>
+				<!--/content-primary -->
+				<br>
+				<div align="center">
+					<div data-role="navbar">
+						<ul>
+							<li>
+								<a href="#" data-icon="star">FAQ</a>
+							</li>
+							<li>
+								<a href="#" data-icon="info">Terms of use</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /navbar -->
+				</div>
+				<br>
+				<br>
+
+			</div>
+
+			<div data-role="footer" data-theme="f" id="fixed-footer"
+				data-position="fixed">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+
+		<div data-role="page" id="page" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<!--<div data-role="header" data-theme="e">-->
+				<h1>
+					Money Online
+				</h1>
+				<a href="#page6" data-icon="gear" data-iconpos="notext"
+					class="ui-btn-right jqm-home"></a>
+				<a href="#signin" data-icon="unlocked"
+					class="ui-btn-left ui-state-error ">Logout</a>
+			</div>
+			<br>
+			<br>
+			<div id="token"></div>
+			<div data-role="content">
+				<div id="storeItem"></div>
+				<div class="flexslider">
+					<ul class="slides">
+						<li>
+							<img src="images/banner768x1024_01.png" />
+						</li>
+						<li>
+							<img src="images/banner768x1024.png" />
+						</li>
+						<li>
+							<img src="images/banner03_big.png" />
+						</li>
+						<li>
+							<img src="images/banner04.png" />
+						</li>
+						<li>
+							<img src="images/banner768x1024_02.png" />
+						</li>
+					</ul>
+
+				</div>
+				<ul data-role="listview" data-inset="true">
+					<li>
+						<a href="#page2"> <img src="images/moneyonline_btn.png" />
+							<h4>
+								ทำรายการธนาณัติ
+							</h4>
+							<p>
+								Money Order
+							</p> </a>
+					</li>
+					<li>
+						<a href="#mylists"> <img src="images/mylists_btn.png" />
+							<h3>
+								ตรวจสอบรายการ
+							</h3>
+							<p>
+								My Lists
+							</p> </a>
+					</li>
+					<li>
+						<a href="#mycontacts"> <img src="images/mycontacts_btn.png" />
+							<h3>
+								รายชื่อผู้ติดต่อ
+							</h3>
+							<p>
+								My Contacts
+							</p> </a>
+					</li>
+					<li>
+						<a href="#page5"> <img src="images/myaccounts_btn.png" />
+							<h3>
+								รายการบัญชีธนาคาร
+							</h3>
+							<p>
+								My Accounts
+							</p> </a>
+					</li>
+				</ul>
+				<div align="center">
+					<div data-role="navbar">
+						<ul>
+							<li>
+								<a href="#" data-icon="star">FAQ</a>
+							</li>
+							<li>
+								<a href="#" data-icon="info">Terms of use</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /navbar -->
+				</div>
+				<br>
+				<br>
+			</div>
+
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="page2" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					Money Order
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<div class="ui-body ui-body-c content-primary">
+
+					<form method="post" class="msform" data-ajax="false">
+						<input type="hidden" name="nextStep" value="postotp">
+
+						<strong>ข้อมูลฝากส่งธนาณัติ </strong>
+						<div data-role="fieldcontain">
+							<label for="name">
+								วันที่ฝากส่ง
+							</label>
+							<input type="text" name="name" id="name" value="14-02-2556"
+								data-mini="true" disabled="disabled" />
+							<!--
+           <fieldset class="ui-grid-a" data-theme="b">
+           <div class="ui-block-a" style="width:30%">
+               <label for="name">วันที่ฝากส่ง</label>
+           </div>
+           <div class="ui-block-b" style="width:70%">
+               <input type="text" name="name" id="name" value="14-02-2556" data-mini="true" disabled="disabled"  />
+           </div>
+           </fieldset>
+           -->
+						</div>
+						<!--
+        <div data-role="fieldcontain">
+         <label for="password">Password:</label>
+         <input type="password" name="password" id="password" value="" data-clear-btn="true" />
+        </div>
+        
+        <div data-role="fieldcontain">
+         <label for="number">Number:</label>
+         <input type="number" name="number" id="number" value="" data-clear-btn="true" />
+        </div>
+        
+        <div data-role="fieldcontain">
+         <label for="number-pattern">Number + pattern:</label>
+         <input type="number" name="number" pattern="[0-9]*" id="number-pattern" value="" data-clear-btn="true" placeholder="Pattern attribute [0-9]* for a numeric keypad" />
+        </div>
+        -->
+						<div data-role="fieldcontain">
+							<label for="name">
+								จำนวนเงิน (บาท)
+							</label>
+							<input type="text" name="name" id="name" value=""
+								data-mini="true" />
+						</div>
+						<div data-role="fieldcontain">
+							<label for="name">
+								ค่าธรรมเนียม (บาท)
+							</label>
+							<input type="text" name="name" id="name" value=""
+								data-mini="true" />
+						</div>
+
+						<div data-role="fieldcontain">
+							<label for="select-choice-3" class="select">
+								รับ ณ ไปรษณีย์ปลายทาง
+							</label>
+							<select name="select-choice-3" id="select-choice-3"
+								data-mini="true">
+								<option value="AL">
+									00000 ที่สะดวกในการรับเงิน
+								</option>
+								<option value="AK">
+									00006 CITY EXPRESS
+								</option>
+								<option value="AZ">
+									00007 ปณค. งาน MICT 2012
+								</option>
+								<option value="AR">
+									00009 เคาน์เตอร์บริการไปรษณีย์ Challenger
+								</option>
+								<option value="CA">
+									00010 เคาน์เตอร์บริการไปรฯCentral World
+								</option>
+								<option value="CO">
+									00011 เคาน์เตอร์นิคมฯ กบินทร์บุรี
+								</option>
+								<option value="CT">
+									00012 เคาน์เตอร์ศูนย์บริการร่วมนนทบุรี
+								</option>
+								<option value="DE">
+									00013 เคาน์เตอร์ศูนย์หนังสือจุฬาฯ
+								</option>
+								<option value="FL">
+									00014 เคาน์เตอร์สถานฑูตอเมริกา
+								</option>
+								<option value="GA">
+									00015 ไปรษณีย์รถยนต์(บางขุนเทียน)
+								</option>
+								<option value="HI">
+									00016 เคาน์เตอร์เจ้าคุณทหารลาดกระบัง
+								</option>
+								<option value="ID">
+									00017 เคาน์เตอร์ท่าอากาศยานดอนเมือง
+								</option>
+								<option value="IL">
+									00019 เคาน์เตอร์บ้านดอน
+								</option>
+								<option value="IN">
+									00020 เคาน์เตอร์ ม.ราชภัฏเพชรบูรณ์
+								</option>
+								<option value="IA">
+									00021 เคาน์เตอร์นิคมอุตสาหกรรม 304
+								</option>
+								<option value="KS">
+									00022 เคาน์เตอร์เดอะมอลล์นครราชสีมา
+								</option>
+								<option value="KY">
+									00023 เคาน์เตอร์สวนอุตสาหกรรมโรจนะ
+								</option>
+								<option value="LA">
+									00024 เคาน์เตอร์ ม.เทคโนโลยีสุรนารี
+								</option>
+								<option value="ME">
+									00025 เคาน์เตอร์ศูนย์การค้าอยุธยาพาร์ค
+								</option>
+								<option value="MD">
+									00026 เคาน์เตอร์ the O@SIS
+								</option>
+								<option value="MA">
+									00027 เคาน์เตอร์นิคมอุตสาหกรรมอมตะนคร
+								</option>
+								<option value="MI">
+									00028 เคาน์เตอร์กมลา
+								</option>
+								<option value="MN">
+									00029 เคาน์เตอร์นิคมอุตสาหกรรมลาดกระบัง
+								</option>
+								<option value="MS">
+									00030 เคาน์เตอร์พระจอมเกล้าธนบุรี
+								</option>
+								<option value="MO">
+									00031 เคาน์เตอร์ตลาดโรงเกลือ
+								</option>
+								<option value="MT">
+									00032 เคาน์เตอร์บ่อวิน
+								</option>
+								<option value="NE">
+									00033 เคาน์เตอร์ท่าขอนยาง
+								</option>
+								<option value="NV">
+									00034 เคาน์เตอร์เกษตรศาสตร์กำแพงแสน
+								</option>
+								<option value="NH">
+									00035 เคาน์เตอร์ มศว องครักษ์
+								</option>
+								<option value="NJ">
+									00036 เคาน์เตอร์ ม.นเรศวร
+								</option>
+								<option value="NM">
+									00037 ไปรษณีย์รถยนต์ (มีนบุรี)
+								</option>
+								<option value="NY">
+									00038 ไปรษณีย์รถยนต์ (คลองหลวง)
+								</option>
+								<option value="NC">
+									00039 ไปรษณีย์รถยนต์ (บางพลี)
+								</option>
+								<option value="ND">
+									00040 ไปรษณีย์รถยนต์ (บางละมุง)
+								</option>
+							</select>
+						</div>
+						<div data-role="fieldcontain">
+							<fieldset data-role="controlgroup" data-mini="true">
+								<legend>
+									บริการSMS
+								</legend>
+								<input type="checkbox" name="checkbox-1a" id="checkbox-1a"
+									class="custom" />
+								<label for="checkbox-1a">
+									แจ้งผู้ส่ง
+								</label>
+
+								<input type="checkbox" name="checkbox-2a" id="checkbox-2a"
+									class="custom" />
+								<label for="checkbox-2a">
+									แจ้งผู้รับ
+								</label>
+
+							</fieldset>
+						</div>
+						<!--
+            <div data-role="fieldcontain">
+   <label for="select-choice-1" class="select">Shipping method:</label>
+   <select name="select-choice-1" id="select-choice-1">
+      <option value="standard">Standard: 7 day</option>
+      <option value="rush">Rush: 3 days</option>
+      <option value="express">Express: next day</option>
+      <option value="overnight">Overnight</option>
+   </select>
+</div>
+-->
+
+						<strong> ข้อมูลผู้รับ </strong>
+
+						<div data-role="fieldcontain">
+							<label for="select-choice-1" class="select">
+								My Contacts
+							</label>
+							<select name="select-choice-1" id="select-choice-1">
+								<option value="AL">
+									กรนิกา
+								</option>
+								<option value="AK">
+									กรวิทย์
+								</option>
+								<option value="AZ">
+									กานดา
+								</option>
+								<option value="AR">
+									ขนิษฐา
+								</option>
+								<option value="CA">
+									ขรรชัย
+								</option>
+								<option value="CO">
+									ขันติธรรม
+								</option>
+								<option value="CT">
+									คุณากร
+								</option>
+								<option value="DE">
+									งามดี
+								</option>
+							</select>
+						</div>
+						<div data-role="fieldcontain">
+							<label for="select-choice-2" class="select">
+								คำนำหน้า
+							</label>
+							<select name="select-choice-2" id="select-choice-2">
+								<option value="AL">
+									นาย
+								</option>
+								<option value="AK">
+									นาง
+								</option>
+								<option value="AZ">
+									นางสาว
+								</option>
+							</select>
+						</div>
+						<div data-role="fieldcontain">
+							<label for="rfname">
+								ชื่อ
+							</label>
+							<input type="text" name="rfname" id="rfname" value=""
+								data-mini="true" />
+						</div>
+						<div data-role="fieldcontain">
+							<label for="rlname">
+								นามสกุล
+							</label>
+							<input type="text" name="rlname" id="rlname" value=""
+								data-mini="true" />
+						</div>
+						<div data-role="fieldcontain">
+							<label for="rmobile">
+								หมายเลขโทรศพท์เคลื่อนที่
+							</label>
+							<input type="text" name="rmobile" id="rmobile" value=""
+								data-mini="true" />
+						</div>
+						<div data-role="fieldcontain">
+							<label for="remail">
+								email
+							</label>
+							<input type="text" name="remail" id="remail" value=""
+								data-mini="true" />
+						</div>
+						<div class="ui-block-a">
+							<button type="submit" data-theme="f" data-mini="true">
+								Continue
+							</button>
+						</div>
+					</form>
+				</div>
+				<!--/content-primary -->
+				<br>
+				<br>
+			</div>
+
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="postotp" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					Money Order
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<div class="ui-body ui-body-c content-primary">
+					<h3>
+						ยืนยันข้อมูลฝากส่งธนาณัติ
+					</h3>
+					<div data-role="fieldcontain">
+						<label for="name">
+							วันที่ฝากส่ง
+						</label>
+						14-02-2556
+					</div>
+					<strong>ข้อมูลผู้ส่ง </strong>
+					<div data-role="fieldcontain">
+						<label for="sfname">
+							ชื่อ
+						</label>
+						นาย......
+						<br>
+						<label for="slname">
+							นามสกุล
+						</label>
+						......
+						<br />
+						<label for="smobile">
+							หมายเลขโทรศพท์เคลื่อนที่
+						</label>
+						......
+						<br />
+						<label for="semail">
+							email
+						</label>
+						......
+					</div>
+					<strong>ข้อมูลผู้รับ </strong>
+					<div data-role="fieldcontain">
+						<label for="sfname">
+							ชื่อ
+						</label>
+						นาย......
+						<br>
+						<label for="slname">
+							นามสกุล
+						</label>
+						......
+						<br />
+						<label for="smobile">
+							หมายเลขโทรศพท์เคลื่อนที่
+						</label>
+						......
+						<br />
+						<label for="semail">
+							email
+						</label>
+						......
+					</div>
+					<strong>ข้อมูลฝากส่งธนาณัติ </strong>
+					<div data-role="fieldcontain">
+						<label for="name">
+							จำนวนเงิน (บาท)
+						</label>
+						5000
+						<br>
+						<label for="name">
+							ค่าธรรมเนียม (บาท)
+						</label>
+						50
+						<br />
+						<label for="select-choice-3" class="select">
+							รับ ณ ไปรษณีย์
+						</label>
+						<br>
+						00000 ที่สะดวกในการรับเงิน
+						<br />
+						<legend>
+							บริการSMS
+						</legend>
+						<br>
+						แจ้งผู้ส่ง
+						<br>
+						แจ้งผู้รับ
+						<br>
+						<label for="total">
+							<strong>รวมจำนวนเงิน (บาท)</strong>
+						</label>
+						<strong>5056</strong>
+						<br>
+					</div>
+					<div class="ui-body ui-body-f">
+						<form method="post" class="msform" data-ajax="false">
+							<input type="hidden" name="nextStep" value="postref">
+							<div data-role="fieldcontain">
+								<label for="potp">
+									OTP
+								</label>
+								<input type="text" name="potp" id="potp" value=""
+									data-mini="true" />
+							</div>
+							<div class="ui-block-a">
+								<button type="submit" data-theme="f" data-mini="true">
+									Confirm
+								</button>
+							</div>
+						</form>
+					</div>
+					<br>
+				</div>
+				<!--/content-primary -->
+				<br>
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="postref" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					Money Order
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+			</div>
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<div class="ui-body ui-body-c content-primary">
+					<h3>
+						สรุปข้อมูลฝากส่งธนาณัติ
+					</h3>
+					<strong>รหัสการทำรายการ </strong>
+					<div data-role="fieldcontain">
+						<label for="name">
+							Ref Code.
+						</label>
+						EMO50001234567890
+						<br>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="name">
+							วันที่ฝากส่ง
+						</label>
+						14-02-2556
+					</div>
+					<strong>ข้อมูลผู้ส่ง </strong>
+					<div data-role="fieldcontain">
+						<label for="sfname">
+							ชื่อ
+						</label>
+						นาย......
+						<br>
+						<label for="slname">
+							นามสกุล
+						</label>
+						......
+						<br />
+						<label for="smobile">
+							หมายเลขโทรศพท์เคลื่อนที่
+						</label>
+						......
+						<br />
+						<label for="semail">
+							email
+						</label>
+						......
+					</div>
+					<strong>ข้อมูลผู้รับ </strong>
+					<div data-role="fieldcontain">
+						<label for="sfname">
+							ชื่อ
+						</label>
+						นาย......
+						<br>
+						<label for="slname">
+							นามสกุล
+						</label>
+						......
+						<br />
+						<label for="smobile">
+							หมายเลขโทรศพท์เคลื่อนที่
+						</label>
+						......
+						<br />
+						<label for="semail">
+							email
+						</label>
+						......
+					</div>
+					<strong>ข้อมูลฝากส่งธนาณัติ </strong>
+					<div data-role="fieldcontain">
+						<label for="name">
+							จำนวนเงิน (บาท)
+						</label>
+						5000
+						<br>
+						<label for="name">
+							ค่าธรรมเนียม (บาท)
+						</label>
+						50
+						<br />
+						<label for="select-choice-3" class="select">
+							รับ ณ ไปรษณีย์
+						</label>
+						<br>
+						00000 ที่สะดวกในการรับเงิน
+						<br />
+						<legend>
+							บริการSMS
+						</legend>
+						<br>
+						แจ้งผู้ส่ง
+						<br>
+						แจ้งผู้รับ
+						<br>
+						<label for="total">
+							<strong>รวมจำนวนเงิน (บาท)</strong>
+						</label>
+						<strong>5056</strong>
+					</div>
+
+					<!--
+        <div class="ui-body ui-body-c">
+        <form method="post" class="msform" data-ajax="false">
+        <input type="hidden" name="nextStep" value="payment">
+		<fieldset class="ui-grid-a">			
+		<button type="submit" data-theme="f" data-mini="true">Payment</button>
+	    </fieldset>
+        </form>
+		</div> 
+        -->
+				</div>
+				<!--/content-primary -->
+				<br>
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+
+		<div data-role="page" id="payment" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					Payment
+				</h1>
+				<a href="#mylists" data-icon="grid" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">My Lists</a>
+			</div>
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<div class="ui-body ui-body-c content-primary">
+					<h3>
+						รหัสการทำรายการ
+					</h3>
+					<div data-role="fieldcontain">
+						<label for="name">
+							Ref Code.
+						</label>
+						EMO50001234567890
+						<br>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="name">
+							วันที่ฝากส่ง
+						</label>
+						14-02-2556
+					</div>
+					<strong>ข้อมูลผู้ส่ง </strong>
+					<div data-role="fieldcontain">
+						<label for="sfname">
+							ชื่อ
+						</label>
+						นาย......
+						<br>
+						<label for="slname">
+							นามสกุล
+						</label>
+						......
+						<br />
+						<label for="smobile">
+							หมายเลขโทรศพท์เคลื่อนที่
+						</label>
+						......
+						<br />
+						<label for="semail">
+							email
+						</label>
+						......
+					</div>
+					<strong>ข้อมูลผู้รับ </strong>
+					<div data-role="fieldcontain">
+						<label for="sfname">
+							ชื่อ
+						</label>
+						นาย......
+						<br>
+						<label for="slname">
+							นามสกุล
+						</label>
+						......
+						<br />
+						<label for="smobile">
+							หมายเลขโทรศพท์เคลื่อนที่
+						</label>
+						......
+						<br />
+						<label for="semail">
+							email
+						</label>
+						......
+					</div>
+					<strong>ข้อมูลฝากส่งธนาณัติ </strong>
+					<div data-role="fieldcontain">
+						<label for="name">
+							จำนวนเงิน (บาท)
+						</label>
+						5000
+						<br>
+						<label for="name">
+							ค่าธรรมเนียม (บาท)
+						</label>
+						50
+						<br />
+						<label for="select-choice-3" class="select">
+							รับ ณ ไปรษณีย์
+						</label>
+						<br>
+						00000 ที่สะดวกในการรับเงิน
+						<br />
+						<legend>
+							บริการSMS
+						</legend>
+						<br>
+						แจ้งผู้ส่ง
+						<br>
+						แจ้งผู้รับ
+						<br>
+						<label for="total">
+							<strong>รวมจำนวนเงิน (บาท)</strong>
+						</label>
+						<strong>5056</strong>
+						<br>
+					</div>
+
+					<div class="ui-body ui-body-c">
+						<form method="post" class="msform" data-ajax="false">
+							<input type="hidden" name="nextStep" value="bankotp">
+							<div data-role="fieldcontain">
+								<label for="myaccounts" class="select">
+									My Accounts
+								</label>
+								<select name="myaccounts" id="select-choice-4" data-mini="true">
+									<option value="AL">
+										กรุงไทย
+									</option>
+									<option value="AK">
+										กสิกรไทย
+									</option>
+									<option value="AR">
+										ทหารไทย
+									</option>
+								</select>
+							</div>
+							<div data-role="fieldcontain">
+								<label for="bank" class="select">
+									ชื่อธนาคาร
+								</label>
+								<select name="bank" id="select-choice-5" data-mini="true">
+									<option value="ktb">
+										กรุงไทย
+									</option>
+									<option value="kb">
+										กสิกรไทย
+									</option>
+									<option value="tmb">
+										ทหารไทย
+									</option>
+								</select>
+							</div>
+							<div data-role="fieldcontain">
+								<label for="accid">
+									เลขที่บัญชี
+								</label>
+								<input type="text" name="accid" id="accid" value=""
+									data-mini="true" />
+							</div>
+							<div data-role="fieldcontain">
+								<label for="accname">
+									ชื่อบัญชี
+								</label>
+								<input type="text" name="accname" id="accname" value=""
+									data-mini="true" />
+							</div>
+							<div class="ui-block-a">
+								<button type="submit" data-theme="f" data-mini="true">
+									Continue
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!--/content-primary -->
+				<br>
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="mylists" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Lists
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<!-- JSON DATA -->
+				<!--
+    <ul data-role="listview" data-inset="true" data-theme="c" data-filter="false" id="mylist">
+    </ul>
+    -->
+				<ul data-role="listview" data-inset="true" data-theme="c">
+					<li>
+						<a href="#page3">
+							<h4>
+								รายการทั้งหมด
+							</h4>
+							<p>
+								All Lists
+							</p> <span class="ui-li-count">3</span> </a>
+					</li>
+					<li>
+						<a href="#inprocess1">
+							<h4>
+								รอยืนยันทำรายการ
+							</h4>
+							<p>
+								Wait for Confirm
+							</p> <span class="ui-li-count">1</span> </a>
+					</li>
+					<li>
+						<a href="#inprocess2">
+							<h4>
+								รอชำระเงิน
+							</h4>
+							<p>
+								Wait for Payment
+							</p> <span class="ui-li-count">1</span> </a>
+					</li>
+					<li>
+						<a href="#inprocess3">
+							<h4>
+								รอจ่ายเงินแก่ผู้รับ
+							</h4>
+							<p>
+								Wait for Receiver
+							</p> <span class="ui-li-count">0</span> </a>
+					</li>
+					<li>
+						<a href="#paid">
+							<h4>
+								รายการเสร็จสิ้น
+							</h4>
+							<p>
+								Paid
+							</p> <span class="ui-li-count">1</span> </a>
+					</li>
+				</ul>
+				<br>
+			</div>
+			<br>
+			<br>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="page3" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Lists (All)
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#mylists" data-icon="back" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-left jqm-home">back</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+				<!-- JSON DATA -->
+				<!--
+    <ul data-role="listview" data-inset="true" data-theme="c" data-filter="true" id="listall">
+    </ul>	
+    -->
+				<ul data-role="listview" data-inset="true" data-theme="c"
+					data-filter="true">
+					<li>
+
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO123411111
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายไปรษณีย์ รวดเร็ว
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอชำระเงิน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+					<li>
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO123422222
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายว่องไว แน่นอน
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> ชำระเงินแล้ว
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+					<li>
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO123433333
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายสะดวก สบาย
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอชำระเงิน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+				</ul>
+				<!--
+    <ul id="dataList" data-role="listview" data-inset="true">
+    </ul>
+    -->
+				<!--
+        <div id="images">
+		</div>
+        <script>$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?tags=cat&tagmode=any&format=json&jsoncallback=?",
+        function(data){
+          $.each(data.items, function(i,item){
+            $("<img/>").attr("src", item.media.m).appendTo("#images");
+            if ( i == 3 ) return false;
+          });
+        });</script>                                
+		-->
+				<!-- JSON DATA -->
+				<!--<a href="#" id="getdata-button">Get JSON Data</a>-->
+				<!--<div id="showdata"></div>-->
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="inprocess1" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Lists (In Process)
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#mylists" data-icon="back" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-left jqm-home">back</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+				<!--
+        <ul data-role="listview" data-inset="true" data-theme="c" data-filter="true" id="listwc">
+    	</ul>                                		    -->
+				<ul data-role="listview" data-inset="true" data-theme="c">
+					<li>
+
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายไปรษณีย์ รวดเร็ว
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอยืนยัน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+					<li>
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายสะดวก สบาย
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอยืนยัน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+				</ul>
+			</div>
+			<br>
+			<br>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="inprocess2" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Lists (In Process)
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#mylists" data-icon="back" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-left jqm-home">back</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+				<!--
+        <ul data-role="listview" data-inset="true" data-theme="c" data-filter="true" id="listwp">
+    	</ul>                                		         -->
+				<ul data-role="listview" data-inset="true" data-theme="c">
+					<li>
+
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายไปรษณีย์ รวดเร็ว
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอชำระเงิน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+					<li>
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายสะดวก สบาย
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอชำระเงิน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+				</ul>
+			</div>
+			<br>
+			<br>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="inprocess3" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Lists (In Process)
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#mylists" data-icon="back" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-left jqm-home">back</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+				<!--
+        <ul data-role="listview" data-inset="true" data-theme="c" data-filter="true" id="listwr">
+    	</ul>                                		        
+        -->
+				<ul data-role="listview" data-inset="true" data-theme="c">
+					<li>
+
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายไปรษณีย์ รวดเร็ว
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอผู้รับเงิน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+					<li>
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายสะดวก สบาย
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> รอผู้รับเงิน
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+
+				</ul>
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="paid" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Lists (Paid)
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#mylists" data-icon="back" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-left jqm-home">back</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+				<!--
+		<ul data-role="listview" data-inset="true" data-theme="c" data-filter="true" id="listpaid">
+    	</ul>
+        -->
+				<ul data-role="listview" data-inset="true" data-theme="c">
+					<li>
+						<a href="#" data-transition="slideup">
+							<h3>
+								Ref Code:
+							</h3>
+							<p>
+								EMO1234567890
+							</p>
+							<p>
+								<b>วันที่ทำรายการ</b> 2556-02-14
+							</p>
+							<p>
+								<b>ผู้รับเงิน</b> นายว่องไว แน่นอน
+							</p>
+							<p>
+								<b>จำนวนเงินเงิน</b> 500 บาท
+							</p>
+							<p>
+								<b>สถานะ</b> ชำระเงินแล้ว
+							</p> </a><a href="#" data-transition="slideup">View detail </a>
+					</li>
+				</ul>
+			</div>
+			<br>
+			<br>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+
+
+
+		<div data-role="page" id="mycontacts" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Contacts
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#" data-icon="add" data-iconpos="notext"
+					class="ui-btn-left jqm-home">Add</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+
+				<!--
+        <ul data-role="listview" data-inset="true" data-theme="c" data-filter="true" id="contact">
+    	</ul> 
+        -->
+				<ul data-role="listview" data-inset="true" data-theme="c"
+					data-divider-theme="c" data-autodividers="true">
+					<!--<li data-role="list-divider">ก</li>-->
+					<li>
+
+						<h4>
+							ชื่อ นางกนกพร รวดเร็ว
+						</h4>
+						<p>
+							<b>โทรศัพท์เคลื่อนที่</b> 081-890-1234
+						</p>
+						<p>
+							<b>email</b> receiver@thailandpost.com
+						</p>
+					</li>
+					<li>
+
+						<h4>
+							<b>ชื่อ</b> นายกิจ รวดเร็ว
+						</h4>
+						<p>
+							<b>โทรศัพท์เคลื่อนที่</b> 081-890-1234
+						</p>
+						<p>
+							<b>email</b> receiver@thailandpost.com
+						</p>
+					</li>
+					<!--<li data-role="list-divider">ข</li>-->
+					<li>
+
+						<h4>
+							<b>ชื่อ</b> นายขนิษฐา รวดเร็ว
+						</h4>
+						<p>
+							<b>โทรศัพท์เคลื่อนที่</b> 081-890-1234
+						</p>
+						<p>
+							<b>email</b> receiver@thailandpost.com
+						</p>
+					</li>
+					<li>
+
+						<h4>
+							<b>ชื่อ</b> นายขวาน รวดเร็ว
+						</h4>
+						<p>
+							<b>โทรศัพท์เคลื่อนที่</b> 081-890-1234
+						</p>
+						<p>
+							<b>email</b> receiver@thailandpost.com
+						</p>
+					</li>
+				</ul>
+				<!--
+            <ul data-role="listview" data-autodividers="true">
+				<li><a href="index.html">Adam Kinkaid</a></li>
+				<li><a href="index.html">Alex Wickerham</a></li>
+				<li><a href="index.html">Avery Johnson</a></li>
+				<li><a href="index.html">Bob Cabot</a></li>
+				<li><a href="index.html">Caleb Booth</a></li>
+				<li><a href="index.html">Christopher Adams</a></li>
+				<li><a href="index.html">Culver James</a></li>
+				<li><a href="index.html">David Walsh</a></li>
+				<li><a href="index.html">Drake Alfred</a></li>
+				<li><a href="index.html">Elizabeth Bacon</a></li>
+				<li><a href="index.html">Emery Parker</a></li>
+				<li><a href="index.html">Enid Voldon</a></li>
+				<li><a href="index.html">Francis Wall</a></li>
+				<li><a href="index.html">Graham Smith</a></li>
+				<li><a href="index.html">Greta Peete</a></li>
+				<li><a href="index.html">Harvey Walls</a></li>
+				<li><a href="index.html">Mike Farnsworth</a></li>
+				<li><a href="index.html">Murray Vanderbuilt</a></li>
+				<li><a href="index.html">Nathan Williams</a></li>
+				<li><a href="index.html">Paul Baker</a></li>
+				<li><a href="index.html">Pete Mason</a></li>
+				<li><a href="index.html">Rod Tarker</a></li>
+				<li><a href="index.html">Sawyer Wakefield</a></li>
+			</ul>                                 
+            -->
+			</div>
+			<br>
+			<br>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="page5" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					My Accounts
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+				<a href="#" data-icon="add" data-iconpos="notext"
+					class="ui-btn-left jqm-home">Add</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<br>
+				<ul data-role="listview" data-inset="true" data-theme="c"
+					data-divider-theme="c">
+					<li>
+						<a href="#">
+							<h3>
+								<b>ชื่อธนาคาร</b> กรุงไทย
+							</h3>
+							<p>
+								<b>เลขที่บัญชี</b> xxxxxxx123
+							</p>
+							<p>
+								<b>ชื่อบัญชี</b> นายกิจ รวดเร็ว
+							</p> </a>
+					</li>
+					<!--<li data-role="list-divider">ข</li>-->
+				</ul>
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<div data-role="page" id="page6" data-theme="c">
+			<div data-role="header" data-theme="f" id="fixed-header">
+				<h1>
+					Settings
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+			</div>
+
+			<div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<ul data-role="listview" data-inset="true">
+					<li>
+						<a href="#"> <img src="images/myprofile_btn.png" />
+							<h4>
+								ข้อมูลส่วนตัว
+							</h4>
+							<p>
+								My Profile
+							</p> </a>
+					</li>
+					<li>
+						<a href="#"> <img src="images/mypassword_btn.png" />
+							<h3>
+								เปลี่ยนรหัสผ่าน
+							</h3>
+							<p>
+								My Password
+							</p> </a>
+					</li>
+					<li>
+						<a href="#"> <img src="images/mymessage_btn.png" />
+							<h3>
+								ข้อความของฉัน
+							</h3>
+							<p>
+								My Message
+							</p> <span class="ui-li-count">4</span> </a>
+					</li>
+				</ul>
+			</div>
+			<!--<div data-role="footer">-->
+			<div data-role="footer" data-theme="f" id="fixed-footer">
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+			</div>
+		</div>
+
+		<script>
+//$("#signin").live("pageinit", function() {
+//	$("form.msform").live("submit", handleMSForm);	
+//});
+
+$("#page2").live("pageinit", function() {
+	$("form.msform").live("submit", handleMSForm);	
+});
+$("#postotp").live("pageinit", function() {
+	$("form.msform").live("submit", handleMSForm);	
+});
+<!--
+//$("#postref").live("pageinit", function() {
+//	$("form.msform").live("submit", handleMSForm);	
+//});
+</script>
+
+	</body>
+</html>

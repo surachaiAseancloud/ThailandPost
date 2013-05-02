@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Thailandpost EMO Project</title>
+		<link href="jquery-mobile/jquery.mobile.theme-1.0.min.css"
+			rel="stylesheet" type="text/css" />
+		<link href="jquery-mobile/jquery.mobile.structure-1.0.min.css"
+			rel="stylesheet" type="text/css" />
+		<link href="jquery-mobile/flexslider.css" rel="stylesheet"
+			type="text/css" />
+		<link href="styles/jquery.mobile.glossify.theme.css" rel="stylesheet"
+			type="text/css">
+		<link href="styles/custom.css" rel="stylesheet" type="text/css">
+        
+		<script src="jquery-mobile/jquery-1.6.4.min.js" type="text/javascript"></script>
+		<script src="jquery-mobile/jquery.mobile-1.0.min.js"
+			type="text/javascript"></script>
+		<script src="jquery-mobile/jquery.flexslider.js"
+			type="text/javascript"></script>
+		<script src="jquery-mobile/jquery.flexslider-min.js"
+			type="text/javascript"></script>
+		<script src="main.js"></script>
+		<script type="text/javascript" src="ajax.js"></script>
+		<script src="js/common.js"></script>
+        <script src="js/cordova-2.6.0.js"></script>
+        <script>
+				$(document).on('touchmove',function(e){
+			  e.preventDefault();
+			});
+			//uses body because jquery on events are called off of the element they are
+			//added to, so bubbling would not work if we used document instead.
+			$('body').on('touchstart','.scrollable',function(e) {
+			  if (e.currentTarget.scrollTop === 0) {
+				e.currentTarget.scrollTop = 1;
+			  } else if (e.currentTarget.scrollHeight === e.currentTarget.scrollTop + e.currentTarget.offsetHeight) {
+				e.currentTarget.scrollTop -= 1;
+			  }
+			});
+			$('body').on('touchmove','.scrollable',function(e) {
+			  e.stopPropagation();
+			});
+        </script>
+	</head>
+	<body>
+    
+    	<!--Login page-->
+    
+	<div data-role="page" id="signin" data-theme="c">
+			<div data-role="header"   data-theme="f" 
+				class="fixed-header" >
+				<h1>
+					Sign In
+				</h1>
+				<a href="#page" data-icon="home" data-iconpos="notext"
+					class="ui-btn-right"></a>
+			</div>
+            
+            <div data-role="content">
+				<div align="center" id="bgLogo">
+					<img src="images/banner_money_online.png">
+				</div>
+				<div class="content-primary">
+					<br/>
+					<form id="form1" name="form1" method="post">
+						<!--<input type="hidden" name="nextStep" value="page">-->
+						<div data-role="fieldcontain">
+							<label for="name">
+								Username:
+							</label>
+							<input type="text" name="username" id="username" 
+								data-mini="true" />
+						</div>
+						<div data-role="fieldcontain">
+							<label for="name">
+								Password:
+							</label>
+							<input type="password" name="password" id="password"
+								data-mini="true" />
+						</div>
+						<div class="ui-body ui-body-c">
+							<fieldset class="ui-grid-a">
+								<div class="ui-block-a">
+									<button type="button" onClick="new SignIn().submitForm()" id="login" name="login" data-theme="f"
+										data-mini="true">
+										Sign in
+									</button>
+								</div>
+								<div class="ui-block-b">
+									<button type="button" data-theme="d" data-mini="true"
+										onClick="alert('Register')">
+										Register
+									</button>
+								</div>
+							</fieldset>
+						</div>
+					</form>
+					<div id="message"></div>
+				</div>
+				<!--/content-primary -->
+				<br>
+				<div align="center">
+					<div data-role="navbar">
+						<ul>
+							<li>
+								<a href="#" data-icon="star">FAQ</a>
+							</li>
+							<li>
+								<a href="#" data-icon="info">Terms of use</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /navbar -->
+				</div>
+				<br>
+				<br>
+			</div>
+            
+           <div data-role="footer" data-theme="f" class="fixed-footer" >
+				<h4>
+					ไปรษณีย์ไทย...เครือข่ายชีวิตและเศรษฐกิจไทย
+					<br>
+					HUMAN NETWORKING
+				</h4>
+		   </div>
+           
+		</div>
+        
+        <!--End of Login page-->
+        
+        
+        
+        
+	</body>
+</html>
